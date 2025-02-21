@@ -42,11 +42,11 @@ export const DisplayView = () => {
     const handleImagesUpdate = (newImage) => {
       console.log("Received new image:");
 
-      if (images.length < 24) {
-        // For less than 24 images, simply append with fade-in
+      if (images.length < 16) {
+        // For less than 16 images, simply append with fade-in
         setImages((currentImages) => [...currentImages, newImage]);
       } else {
-        // For 24 or more images, use mosaic animation
+        // For 16 or more images, use mosaic animation
         if (transitioningIndex !== null) {
           console.log("Animation already in progress, adding to queue");
           setTimeout(() => handleImagesUpdate(newImage), 1000);
@@ -93,14 +93,14 @@ export const DisplayView = () => {
 
   return (
     <div
-      className="bg-black w-full overflow-hidden flex items-center"
-      style={{ width: "5376px", height: "1080px", display: "flex", gap: "0px" }}
+      className="bg-black w-full overflow-hidden"
+      style={{ width: "1920px", height: "1080px", display: "flex", gap: "0px" }}
     >
       {images.map((image, index) => (
         <div
           key={index}
           className="relative"
-          style={{ width: "224px", height: "128px", flexShrink: 0 }}
+          style={{ width: "120px", height: "128px", flexShrink: 0 }}
         >
           {transitioningIndex === index && incomingImage && (
             <React.Fragment key={`transition-${index}`}>
@@ -109,7 +109,7 @@ export const DisplayView = () => {
                 src={incomingImage}
                 alt="Incoming"
                 className="absolute inset-0 w-full h-full object-cover"
-                style={{ width: "224px", height: "128px" }}
+                style={{ width: "120px", height: "128px" }}
                 onError={(e) => {
                   console.error("Error loading incoming image");
                   e.target.src =
@@ -134,7 +134,7 @@ export const DisplayView = () => {
                         backgroundImage: removedTiles.includes(i)
                           ? "none"
                           : `url(${images[index]})`,
-                        backgroundSize: "224px 128px",
+                        backgroundSize: "120px 128px",
                         backgroundPosition: `-${(col * 224) / GRID_SIZE}px -${
                           (row * 128) / GRID_SIZE
                         }px`,
@@ -155,8 +155,8 @@ export const DisplayView = () => {
             src={image}
             alt={`Display ${index + 1}`}
             className="w-full h-full object-cover"
-            style={{ width: "224px", height: "128px" }}
-            initial={images.length < 24 ? { opacity: 0 } : false}
+            style={{ width: "120px", height: "128px" }}
+            initial={images.length < 16 ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
             onError={(e) => {
