@@ -59,7 +59,7 @@ export const DisplayView = () => {
 
         let tileIndices = Array.from(
           { length: GRID_SIZE * GRID_SIZE },
-          (_, i) => i
+          (_, i) => i,
         );
         tileIndices = tileIndices.sort(() => Math.random() - 0.5);
         setRemovedTiles([]);
@@ -93,8 +93,8 @@ export const DisplayView = () => {
 
   return (
     <div
-      className="bg-black w-full overflow-hidden"
-      style={{ width: "5376px", height: "128px", display: "flex", gap: "0px" }}
+      className="bg-black w-full overflow-hidden flex items-center"
+      style={{ width: "5376px", height: "1080px", display: "flex", gap: "0px" }}
     >
       {images.map((image, index) => (
         <div
