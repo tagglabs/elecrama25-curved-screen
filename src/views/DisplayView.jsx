@@ -42,11 +42,11 @@ export const DisplayView = () => {
     const handleImagesUpdate = (newImage) => {
       console.log("Received new image:");
 
-      if (images.length < 16) {
-        // For less than 16 images, simply append with fade-in
+      if (images.length < 24) {
+        // For less than 24 images, simply append with fade-in
         setImages((currentImages) => [...currentImages, newImage]);
       } else {
-        // For 16 or more images, use mosaic animation
+        // For 24 or more images, use mosaic animation
         if (transitioningIndex !== null) {
           console.log("Animation already in progress, adding to queue");
           setTimeout(() => handleImagesUpdate(newImage), 1000);
@@ -67,7 +67,7 @@ export const DisplayView = () => {
         tileIndices.forEach((tile, index) => {
           setTimeout(() => {
             setRemovedTiles((prev) => [...prev, tile]);
-          }, index * 20);
+          }, index * 90);
         });
 
         setTimeout(() => {
@@ -79,7 +79,7 @@ export const DisplayView = () => {
           setTransitioningIndex(null);
           setRemovedTiles([]);
           setIncomingImage(null);
-        }, tileIndices.length * 20 + 500);
+        }, tileIndices.length * 90 + 500);
       }
     };
 
@@ -94,79 +94,120 @@ export const DisplayView = () => {
   return (
     <div
       className="bg-black w-full overflow-hidden"
-      style={{ width: "1920px", height: "1080px", display: "flex", gap: "0px" }}
+      style={{ width: "1920px", height: "1080px", overflow: "hidden" }}
     >
-      {images.map((image, index) => (
-        <div
-          key={index}
-          className="relative"
-          style={{ width: "120px", height: "128px", flexShrink: 0 }}
-        >
-          {transitioningIndex === index && incomingImage && (
-            <React.Fragment key={`transition-${index}`}>
-              {/* New Image Positioned Behind */}
-              <img
-                src={incomingImage}
-                alt="Incoming"
-                className="absolute inset-0 w-full h-full object-fill"
-                style={{ width: "120px", height: "128px" }}
-                onError={(e) => {
-                  console.error("Error loading incoming image");
-                  e.target.src =
-                    'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
-                }}
-              />
+      <motion.div
+        style={{
+          display: "flex",
+          gap: "0px",
+          width: `${images.length * 80 * 2}px`,
+        }}
+        animate={{
+          x: [0, `-${images.length * 80}px`],
+        }}
+        transition={{
+          x: {
+            duration: 50,
+            ease: "linear",
+            repeat: Infinity,
+            repeatType: "loop",
+          },
+        }}
+      >
+        {/* First set of images */}
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="relative"
+            style={{ width: "80px", height: "128px", flexShrink: 0 }}
+          >
+            {transitioningIndex === index && incomingImage && (
+              <React.Fragment key={`transition-${index}`}>
+                {/* New Image Positioned Behind */}
+                <img
+                  src={incomingImage}
+                  alt="Incoming"
+                  className="absolute inset-0 w-full h-full object-fill"
+                  style={{ width: "80px", height: "128px" }}
+                  onError={(e) => {
+                    console.error("Error loading incoming image");
+                    e.target.src =
+                      'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+                  }}
+                />
 
-              {/* Old Image Cut Into Tiles */}
-              <div className="absolute inset-0 w-full h-full grid grid-cols-8 grid-rows-8">
-                {[...Array(GRID_SIZE * GRID_SIZE)].map((_, i) => {
-                  const row = Math.floor(i / GRID_SIZE);
-                  const col = i % GRID_SIZE;
-                  return (
-                    <motion.div
-                      key={i}
-                      className="absolute"
-                      style={{
-                        width: `${100 / GRID_SIZE}%`,
-                        height: `${100 / GRID_SIZE}%`,
-                        top: `${(row * 100) / GRID_SIZE}%`,
-                        left: `${(col * 100) / GRID_SIZE}%`,
-                        backgroundImage: removedTiles.includes(i)
-                          ? "none"
-                          : `url(${images[index]})`,
-                        backgroundSize: "120px 128px",
-                        backgroundPosition: `-${(col * 224) / GRID_SIZE}px -${
-                          (row * 128) / GRID_SIZE
-                        }px`,
-                      }}
-                      animate={
-                        removedTiles.includes(i)
-                          ? { opacity: 0 }
-                          : { opacity: 1 }
-                      }
-                      transition={{ duration: 0.4 }}
-                    />
-                  );
-                })}
-              </div>
-            </React.Fragment>
-          )}
-          <motion.img
-            src={image}
-            alt={`Display ${index + 1}`}
-            className="w-full h-full object-fill"
-            style={{ width: "120px", height: "128px" }}
-            initial={images.length < 16 ? { opacity: 0 } : false}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            onError={(e) => {
-              console.error("Error loading image at index:", index);
-              e.target.src =
-                'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
-            }}
-          />
-        </div>
-      ))}
+                {/* Old Image Cut Into Tiles */}
+                <div className="absolute inset-0 w-full h-full grid grid-cols-8 grid-rows-8">
+                  {[...Array(GRID_SIZE * GRID_SIZE)].map((_, i) => {
+                    const row = Math.floor(i / GRID_SIZE);
+                    const col = i % GRID_SIZE;
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute"
+                        style={{
+                          width: `${100 / GRID_SIZE}%`,
+                          height: `${100 / GRID_SIZE}%`,
+                          top: `${(row * 100) / GRID_SIZE}%`,
+                          left: `${(col * 100) / GRID_SIZE}%`,
+                          backgroundImage: removedTiles.includes(i)
+                            ? "none"
+                            : `url(${images[index]})`,
+                          backgroundSize: "80px 128px",
+                          backgroundPosition: `-${(col * 224) / GRID_SIZE}px -${
+                            (row * 128) / GRID_SIZE
+                          }px`,
+                        }}
+                        animate={
+                          removedTiles.includes(i)
+                            ? { opacity: 0 }
+                            : { opacity: 1 }
+                        }
+                        transition={{ duration: 0.4 }}
+                      />
+                    );
+                  })}
+                </div>
+              </React.Fragment>
+            )}
+            <motion.img
+              src={image}
+              alt={`Display ${index + 1}`}
+              className="w-full h-full object-fill"
+              style={{ width: "80px", height: "128px" }}
+              initial={images.length < 24 ? { opacity: 0 } : false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              onError={(e) => {
+                console.error("Error loading image at index:", index);
+                e.target.src =
+                  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+              }}
+            />
+          </div>
+        ))}
+
+        {/* Duplicate set of images for continuous scrolling */}
+        {images.map((image, index) => (
+          <div
+            key={`duplicate-${index}`}
+            className="relative"
+            style={{ width: "80px", height: "128px", flexShrink: 0 }}
+          >
+            <motion.img
+              src={image}
+              alt={`Display Duplicate ${index + 1}`}
+              className="w-full h-full object-fill"
+              style={{ width: "80px", height: "128px" }}
+              onError={(e) => {
+                console.error("Error loading duplicate image at index:", index);
+                e.target.src =
+                  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+              }}
+            />
+          </div>
+        ))}
+      </motion.div>
     </div>
   );
 };

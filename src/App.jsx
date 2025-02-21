@@ -12,7 +12,7 @@ export default function App() {
           <Route
             path="/"
             element={
-              <div className="min-h-screen flex flex-col items-center justify-center bg-black">
+              <div className="min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden">
                 <h1 className="text-3xl font-bold mb-8">Choose View Mode</h1>
                 <div className="space-y-4">
                   <Link

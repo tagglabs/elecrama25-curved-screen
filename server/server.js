@@ -27,10 +27,10 @@ app.use(express.json({ limit: "50mb" }));
 // API Routes
 app.get("/api/images", async (req, res) => {
   try {
-    // Get the last 16 users with images, sorted by creation date
+    // Get the last 24 users with images, sorted by creation date
     const users = await UserModel.find({ image: { $ne: null } })
       .sort({ createdAt: -1 })
-      .limit(16)
+      .limit(24)
       .select("image createdAt");
 
     // Send only the images array
