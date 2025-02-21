@@ -108,7 +108,7 @@ export const DisplayView = () => {
               <img
                 src={incomingImage}
                 alt="Incoming"
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-fill"
                 style={{ width: "120px", height: "128px" }}
                 onError={(e) => {
                   console.error("Error loading incoming image");
@@ -154,7 +154,7 @@ export const DisplayView = () => {
           <motion.img
             src={image}
             alt={`Display ${index + 1}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-fill"
             style={{ width: "120px", height: "128px" }}
             initial={images.length < 16 ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
